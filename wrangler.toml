@@ -1,0 +1,17 @@
+name = "gudanghabit-pro"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+
+# Static frontend
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+# D1 Database - buat dulu di dashboard Cloudflare, lalu isi database_id
+[[d1_databases]]
+binding = "DB"
+database_name = "gudanghabit-db"
+database_id = "GANTI_DENGAN_DATABASE_ID"
+
+# Secret untuk production (opsional)
+# wrangler secret put SESSION_SECRET

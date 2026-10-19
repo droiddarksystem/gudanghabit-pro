@@ -1,55 +1,61 @@
-# GudangHabit Pro — Fullstack (Node.js + SQLite)
+# GudangHabit Pro — Cloudflare Workers + D1
 
-Sistem checklist habit, aset gudang, dan serah terima shift untuk operasional logistik.
+Sistem checklist habit, aset gudang, dan serah terima shift.  
+Hosted di **Cloudflare** (gratis, tanpa kartu kredit).
 
-## Tech Stack
-- **Backend**: Node.js + Express
-- **Database**: SQLite (better-sqlite3)
-- **Auth**: Token session + bcrypt password hash
-- **Frontend**: HTML / CSS / Vanilla JS
+## Tech
+- Cloudflare Workers (backend API)
+- Cloudflare D1 (database SQLite)
+- Static assets (frontend HTML/CSS/JS)
 
-## Cara Menjalankan
+## Deploy dari komputer (sekali saja)
 
+### 1. Install tools
 ```bash
-cd server
+npm install -g wrangler
+wrangler login
+```
+
+### 2. Buat database D1
+```bash
+cd gudanghabit-cf
+wrangler d1 create gudanghabit-db
+```
+Copy `database_id` yang muncul, tempel ke `wrangler.toml` (ganti `GANTI_DENGAN_DATABASE_ID`).
+
+### 3. Jalankan migrasi (buat tabel)
+```bash
+wrangler d1 execute gudanghabit-db --file=./migrations/0001_init.sql
+```
+
+### 4. Deploy
+```bash
 npm install
-npm start
+npm run deploy
 ```
 
-Lalu buka browser: **http://localhost:3000**
+URL akan muncul, contoh: `https://gudanghabit-pro.USERNAME.workers.dev`
 
-## Struktur Folder
+---
 
-```
-gudanghabit-fullstack/
-├── public/          → Frontend (HTML, CSS, JS)
-├── server/
-│   ├── index.js     → API server
-│   ├── db.js        → SQLite setup & tables
-│   ├── package.json
-│   └── gudanghabit.db  (otomatis dibuat saat pertama jalan)
-└── README.md
-```
+## Deploy lewat Dashboard Cloudflare (bisa dari HP + GitHub)
 
-## API Endpoints
+1. Upload/folder project ini ke GitHub
+2. Cloudflare Dashboard → **Workers & Pages** → **Create**
+3. Connect ke repo GitHub
+4. Buat D1 database bernama `gudanghabit-db`
+5. Bind D1 ke Worker (binding name: `DB`)
+6. Jalankan SQL migrasi di tab D1 → Console (copy isi `migrations/0001_init.sql`)
+7. Deploy
 
-| Method | Path | Keterangan |
-|--------|------|------------|
-| POST | /api/register | Daftar akun |
-| POST | /api/login | Login |
-| POST | /api/logout | Logout |
-| GET | /api/me | Info user login |
-| GET/POST | /api/habits | Checklist habit |
-| GET/POST | /api/aset | Checklist aset |
-| GET/POST | /api/notes | Catatan shift |
-| GET/POST | /api/serah-manual | Item manual serah terima |
-| GET/POST | /api/serah-terima | Riwayat serah terima |
-| GET | /api/habits/history | Progress 7 hari |
+---
 
 ## Fitur
-- Login & register (password di-hash)
-- Habit checklist per divisi (Inbound, Outbound, Packing, Return, Tracer, Putaway, Forklift, Umum)
-- Checklist aset gudang (wajib & opsional)
-- Serah terima shift terkunci sampai semua syarat terpenuhi
-- Riwayat serah terima & progress habit
-- Data tersimpan di SQLite (file `gudanghabit.db`)
+- Login & register
+- Habit per divisi (Inbound, Outbound, Packing, Return, Tracer, Putaway, Forklift, Umum)
+- Checklist aset gudang
+- Serah terima shift (terkunci sampai syarat lengkap)
+- Riwayat
+
+## API
+Sama seperti versi Node: `/api/register`, `/api/login`, `/api/habits`, `/api/aset`, dll.

@@ -1,0 +1,15 @@
+{
+  "name": "gudanghabit-pro",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:create": "wrangler d1 create gudanghabit-db",
+    "db:migrate": "wrangler d1 execute gudanghabit-db --file=./migrations/0001_init.sql",
+    "db:migrate:local": "wrangler d1 execute gudanghabit-db --local --file=./migrations/0001_init.sql"
+  },
+  "devDependencies": {
+    "wrangler": "^3.99.0"
+  }
+}
